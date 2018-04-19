@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  jekyll:
+    container_name: gtrifonov.com
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+      args:
+        - repo=https://github.com/gtrifonov/gtrifonov.github.io.git
+        - branch=develop
+        - PORT=80
+    image: gtrifonov.azurecr.io/jekyll-serve   
+    ports:
+      - '80:4000'
