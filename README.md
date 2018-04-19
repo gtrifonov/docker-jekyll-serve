@@ -1,16 +1,37 @@
 # Jekyll in a Docker Container
 
-> But this has been done. Why not `docker pull jekyll/jekyll` or `bretfisher/jekyll-serve`?
+Why not to use `docker pull jekyll/jekyll` or `docker pull bretfisher/jekyll-serve`?
 
-- Instead of mounting local folder as `bretfisher/jekyll-serve` I wanted to pull files from git repository of my choice
+- Instead of mounting local folder as `bretfisher/jekyll-serve` I wanted to pull files from git repository of my choice.
 
-> So, this does that. 
+So, this does that. 
 
-I am using docker container to deploy develop branch of my blog to preview changes in  a cloud before merging it to master. once changes tested in azure container instance and merged, github pages picking them up and publishing to gtrifonov.com
+I am using docker container to deploy develop branch of my blog to preview changes in  a cloud before merging it to master. once changes tested in azure container instance and merged, github pages picking them up and publishing to gtrifonov.com. I want to be able to publish and preview post from my phone when i am away from my dev box. Idea is to have git webhook triggered on git push and deploy image to azure for preview.
 
-## Getting Started
+## Running your jekyll site locally and deploying to Azure Container Service
 
-// TODO:
+Building and running container locally. Change docker-compose.yml file to insert your git repo url an change container name, branch, ports if needed.
+> docker-compose up -d --build
+
+Lookup logs locally and at this point you can preview your website locally
+> docker logs gtrifonov.com --follow
+
+Assuming you have your azure registry created this command will publish image. You don't need to rebuild image and publish image with every new blog post (git push)
+> docker push gtrifonov.azurecr.io/jekyll-serve:latest
+
+Create container instance in azure
+> az container create --resource-group {YOUR_RESOURCE_GROUP} --name blog --image gtrifonov.azurecr.io/jekyll-serve --cpu 1 --memory 1 --registry-username {YOUR_USERNAME} --registry-password {YOUR_PASSWORD} --dns-name-label {YOUR_SUBDOMAIN} --ports 80
+
+See a staus of your container
+> az container logs --resource-group DefaultWestUs --name gtrifonovcom --follow
+
+Once testing is done you can delete container to free resources
+> az container delete --resource-group DefaultWestUs --name gtrifonovcom
+ 
+ 
+ 
+ 
+ 
 
 ## License
 
